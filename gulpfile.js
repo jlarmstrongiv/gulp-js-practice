@@ -36,6 +36,7 @@ const STYLES_PATH = 'public/scss/**/*.scss';
 const TEMPLATES_PATH = 'public/templates/**/*.hbs'
 const IMAGES_PATH = 'public/images/**/*.{png,jpeg,jpg,svg,gif}'
 // const STYLES_PATH = 'public/css/**/*.css';
+// const STYLES_PATH = 'public/less/**/*.less';
 
 gulp.task('styles', () => {
   console.log('styles');
