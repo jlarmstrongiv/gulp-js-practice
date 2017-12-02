@@ -21,6 +21,9 @@ const wrap = require('gulp-wrap');
 const imagemin = require('gulp-imagemin');
 const imageminPngquant = require('imagemin-pngquant');
 const imageminJpegRecompress = require('imagemin-jpeg-recompress');
+// other
+const del = require('del');
+const zip = require('gulp-zip');
 
 const DIST_PATH = 'public/dist'
 const SCRIPTS_PATH = 'public/scripts/**/*.js';
@@ -102,9 +105,21 @@ gulp.task('templates', () => {
     .pipe(concat('templates.js'))
     .pipe(gulp.dest(DIST_PATH))
     .pipe(livereload());
-})
+});
 
-gulp.task('default', ['images', 'templates', 'styles', 'scripts'], () => {
+gulp.task('clean', function () {
+  return del.sync([
+    DIST_PATH
+  ])
+});
+
+gulp.task('export', () => {
+  return gulp.src('public/**/*')
+    .pipe(zip('website.zip'))
+    .pipe(gulp.dest('./'))
+});
+
+gulp.task('default', ['clean', 'images', 'templates', 'styles', 'scripts'], () => {
   console.log('default');
 });
 
