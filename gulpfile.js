@@ -10,8 +10,13 @@ const uglify = require('gulp-uglify');
 const babel = require('gulp-babel'); // npmsd babel-preset-es2015 and babel-core
 // css
 const minifyCss = require('gulp-minify-css');
-const autoprefixer = require('gulp-autoprefixer');
+const autoprefixer = require('gulp-autoprefixer'); // only sass
 const sass = require('gulp-sass');
+const less = require('gulp-less');
+const LessAutoprefix = require('less-plugin-autoprefix');
+const lessAutoprefix = new LessAutoprefix({
+  browsers: ['last 2 versions']
+})
 // handlebars
 const handlebars = require('gulp-handlebars');
 const handlebarsLib = require('handlebars');
@@ -153,3 +158,22 @@ gulp.task('watch', ['default'], () => {
 //     .pipe(gulp.dest(DIST_PATH))
 //     .pipe(livereload())
 // });
+
+gulp.task('styles', () => {
+  console.log('styles');
+
+  return gulp.src(['public/less/styles.less'])
+    .pipe(plumber((err) => {
+      console.log('styles task error');
+      console.log(err);
+      this.emit('end');
+    }))
+    .pipe(sourcemaps.init())
+    .pipe(less({
+      plugins: [lessAutoprefix]
+    }))
+    .pipe(minifyCss())
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(DIST_PATH))
+    .pipe(livereload())
+});
