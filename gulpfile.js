@@ -12,17 +12,22 @@ const babel = require('gulp-babel'); // npmsd babel-preset-es2015 and babel-core
 const minifyCss = require('gulp-minify-css');
 const autoprefixer = require('gulp-autoprefixer');
 const sass = require('gulp-sass');
-// Handlebars
+// handlebars
 const handlebars = require('gulp-handlebars');
 const handlebarsLib = require('handlebars');
 const declare = require('gulp-declare');
 const wrap = require('gulp-wrap');
+// images
+const imagemin = require('gulp-imagemin');
+const imageminPngquant = require('imagemin-pngquant');
+const imageminJpegRecompress = require('imagemin-jpeg-recompress');
 
 const DIST_PATH = 'public/dist'
 const SCRIPTS_PATH = 'public/scripts/**/*.js';
-// const STYLES_PATH = 'public/css/**/*.css';
 const STYLES_PATH = 'public/scss/**/*.scss';
 const TEMPLATES_PATH = 'public/templates/**/*.hbs'
+const IMAGES_PATH = 'public/images/**/*.{png,jpeg,jpg,svg,gif}'
+// const STYLES_PATH = 'public/css/**/*.css';
 
 gulp.task('styles', () => {
   console.log('styles');
@@ -67,6 +72,19 @@ gulp.task('scripts', () => {
 
 gulp.task('images', () => {
   console.log('images');
+
+  return gulp.src(IMAGES_PATH)
+    .pipe(imagemin(
+      [
+        imagemin.gifsicle(),
+        imagemin.jpegtran(),
+        imagemin.optipng(),
+        imagemin.svgo(),
+        imageminPngquant(),
+        imageminJpegRecompress()
+      ]
+    ))
+    .pipe(gulp.dest(DIST_PATH + '/images'))
 });
 
 gulp.task('templates', () => {
