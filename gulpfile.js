@@ -13,19 +13,16 @@ const minifyCss = require('gulp-minify-css');
 const autoprefixer = require('gulp-autoprefixer');
 const sass = require('gulp-sass');
 // Handlebars
-// const handlebars = require('gulp-handlebars');
-// const handlebarsLib = require('handlebars');
-// const declare = require('gulp-declare');
-// const wrap = require('gulp-wrap');
+const handlebars = require('gulp-handlebars');
+const handlebarsLib = require('handlebars');
+const declare = require('gulp-declare');
+const wrap = require('gulp-wrap');
 
 const DIST_PATH = 'public/dist'
 const SCRIPTS_PATH = 'public/scripts/**/*.js';
 // const STYLES_PATH = 'public/css/**/*.css';
 const STYLES_PATH = 'public/scss/**/*.scss';
-
-gulp.task('default', () => {
-  console.log('default');
-});
+const TEMPLATES_PATH = 'public/templates/**/*.hbs'
 
 gulp.task('styles', () => {
   console.log('styles');
@@ -72,15 +69,37 @@ gulp.task('images', () => {
   console.log('images');
 });
 
-gulp.task('watch', () => {
+gulp.task('templates', () => {
+  console.log('templates');
+
+  return gulp.src(TEMPLATES_PATH)
+    .pipe(handlebars({
+      handlebars: handlebarsLib
+    }))
+    .pipe(wrap('Handlebars.template(<%= contents %>)'))
+    .pipe(declare({
+      namespace: 'templates',
+      noRedeclare: true
+    }))
+    .pipe(concat('templates.js'))
+    .pipe(gulp.dest(DIST_PATH))
+    .pipe(livereload());
+})
+
+gulp.task('default', ['images', 'templates', 'styles', 'scripts'], () => {
+  console.log('default');
+});
+
+gulp.task('watch', ['default'], () => {
   console.log('watch');
   require('./server.js');
   livereload.listen();
   gulp.watch(SCRIPTS_PATH, ['scripts']);
-  gulp.watch(STYLES_PATH, ['styles'])
+  gulp.watch(STYLES_PATH, ['styles']);
+  gulp.watch(TEMPLATES_PATH, ['templates']);
 });
 
-// ### OLD STYLES ###
+// Old Styles
 
 // gulp.task('styles', () => {
 //   console.log('styles');
