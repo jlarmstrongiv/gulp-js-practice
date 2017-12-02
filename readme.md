@@ -16,4 +16,12 @@ To install this project,
 
 ## Other
 
+The server runs on `http://localhost:9345/`
+
+Other available commands:
+
+- `gulp`:  cleans the dist folder and builds the project
+- `gulp clean`:  deletes the dist folder
+- `gulp export`:  packages the dist folder in a zip file
+
 That’s about it.  Hope you have a nice day! :) 
