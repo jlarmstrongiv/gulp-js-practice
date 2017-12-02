@@ -1,13 +1,22 @@
-// research glob, notify, gulp load plugins, omitting source map for build, use fs instead of require
+// research glob, notify, gulp load plugins, omitting source map for build, newer version of babel, use fs instead of require
+// ordinary or dual dependencies
 const gulp = require('gulp');
-const plumber = require('gulp-plumber')
-const uglify = require('gulp-uglify');
+const plumber = require('gulp-plumber');
 const livereload = require('gulp-livereload');
 const concat = require('gulp-concat');
+const sourcemaps = require('gulp-sourcemaps');
+// javascript
+const uglify = require('gulp-uglify');
+const babel = require('gulp-babel'); // npmsd babel-preset-es2015 and babel-core
+// css
 const minifyCss = require('gulp-minify-css');
 const autoprefixer = require('gulp-autoprefixer');
-const sourcemaps = require('gulp-sourcemaps');
 const sass = require('gulp-sass');
+// Handlebars
+// const handlebars = require('gulp-handlebars');
+// const handlebarsLib = require('handlebars');
+// const declare = require('gulp-declare');
+// const wrap = require('gulp-wrap');
 
 const DIST_PATH = 'public/dist'
 const SCRIPTS_PATH = 'public/scripts/**/*.js';
@@ -23,7 +32,7 @@ gulp.task('styles', () => {
 
   return gulp.src(['public/scss/styles.scss'])
     .pipe(plumber((err) => {
-      console.log('Styles Task Error');
+      console.log('styles task error');
       console.log(err);
       this.emit('end');
     }))
@@ -43,7 +52,18 @@ gulp.task('scripts', () => {
   console.log('scripts');
 
   return gulp.src(SCRIPTS_PATH)
+    .pipe(plumber((err) => {
+      console.log('scripts task error');
+      console.log(err);
+      this.emit('end');
+    }))
+    .pipe(sourcemaps.init())
+    .pipe(concat('scripts.js'))
+    .pipe(babel({
+      presets: ['es2015']
+    }))
     .pipe(uglify())
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest(DIST_PATH))
     .pipe(livereload())
 });
