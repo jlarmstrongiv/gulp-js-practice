@@ -7,10 +7,12 @@ const concat = require('gulp-concat');
 const minifyCss = require('gulp-minify-css');
 const autoprefixer = require('gulp-autoprefixer');
 const sourcemaps = require('gulp-sourcemaps');
+const sass = require('gulp-sass');
 
 const DIST_PATH = 'public/dist'
 const SCRIPTS_PATH = 'public/scripts/**/*.js';
-const STYLES_PATH = 'public/css/**/*.css';
+// const STYLES_PATH = 'public/css/**/*.css';
+const STYLES_PATH = 'public/scss/**/*.scss';
 
 gulp.task('default', () => {
   console.log('default');
@@ -19,18 +21,19 @@ gulp.task('default', () => {
 gulp.task('styles', () => {
   console.log('styles');
 
-  return gulp.src(['public/css/reset.css', STYLES_PATH])
+  return gulp.src(['public/scss/styles.scss'])
     .pipe(plumber((err) => {
       console.log('Styles Task Error');
       console.log(err);
       this.emit('end');
     }))
     .pipe(sourcemaps.init())
-    .pipe(concat('styles.css'))
     .pipe(autoprefixer({
       browsers: ['last 2 versions']
     }))
-    .pipe(minifyCss())
+    .pipe(sass({
+      outputStyle: 'compressed'
+    }))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(DIST_PATH))
     .pipe(livereload())
@@ -56,3 +59,25 @@ gulp.task('watch', () => {
   gulp.watch(SCRIPTS_PATH, ['scripts']);
   gulp.watch(STYLES_PATH, ['styles'])
 });
+
+// ### OLD STYLES ###
+
+// gulp.task('styles', () => {
+//   console.log('styles');
+//
+//   return gulp.src(['public/css/reset.css', STYLES_PATH])
+//     .pipe(plumber((err) => {
+//       console.log('Styles Task Error');
+//       console.log(err);
+//       this.emit('end');
+//     }))
+//     .pipe(sourcemaps.init())
+//     .pipe(concat('styles.css'))
+//     .pipe(autoprefixer({
+//       browsers: ['last 2 versions']
+//     }))
+//     .pipe(minifyCss())
+//     .pipe(sourcemaps.write())
+//     .pipe(gulp.dest(DIST_PATH))
+//     .pipe(livereload())
+// });
